@@ -10,6 +10,7 @@ import "@openzeppelin/contracts/utils/Base64.sol";
 contract ChainBattles is ERC721URIStorage {
     using Strings for uint256;
     using Counters for Counters.Counter; 
+    Counters.Counter private _tokenIds;
 
     mapping(uint256 => uint256) public tokenIdToLevels;
 
@@ -17,7 +18,7 @@ contract ChainBattles is ERC721URIStorage {
     }
 
 
-    function generateCharacter(uint256 tokenId) public returns(string memory){
+    function generateCharacter(uint256 tokenId) public view returns(string memory){
 
     bytes memory svg = abi.encodePacked(
         '<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet" viewBox="0 0 350 350">',
@@ -40,7 +41,7 @@ contract ChainBattles is ERC721URIStorage {
     return levels.toString();
 }
 
-function getTokenURI(uint256 tokenId) public returns (string memory){
+function getTokenURI(uint256 tokenId) public view returns (string memory){
     bytes memory dataURI = abi.encodePacked(
         '{',
             '"name": "onChain NFTs #', tokenId.toString(), '",',
@@ -48,14 +49,30 @@ function getTokenURI(uint256 tokenId) public returns (string memory){
             '"image": "', generateCharacter(tokenId), '"',
         '}'
     );
-    console.log(string(abi.encodePacked("data:application/json;base64,",Base64.encode(dataURI))));
-    
+   // console.log(string(abi.encodePacked("data:application/json;base64,",Base64.encode(dataURI))));
+
     return string(
         abi.encodePacked(
             "data:application/json;base64,",
             Base64.encode(dataURI)
         )
     );
+}
+
+function mint() public {
+    _tokenIds.increment();
+    uint256 newItemId = _tokenIds.current();
+    _safeMint(msg.sender, newItemId);
+    tokenIdToLevels[newItemId] = 0;
+    _setTokenURI(newItemId, getTokenURI(newItemId));
+}
+
+ function train(uint256 tokenId) public {
+   require(_exists(tokenId), "Please use an existing tokenID");
+   require(ownerOf(tokenId) == msg.sender, "You must own this NFT to train it!");
+   uint256 currentLevel = tokenIdToLevels[tokenId];
+   tokenIdToLevels[tokenId] = currentLevel + 1;
+   _setTokenURI(tokenId, getTokenURI(tokenId));
 }
 
 
