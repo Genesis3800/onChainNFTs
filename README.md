@@ -1,15 +1,5 @@
-# Basic Sample Hardhat Project
+# Dynamic NFT demo
 
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, a sample script that deploys that contract, and an example of a task implementation, which simply lists the available accounts.
+This is a hardhat project with the contract written in Solidity, and compiled with the version 0.8.10;
 
-Try running some of the following tasks:
-
-```shell
-npx hardhat accounts
-npx hardhat compile
-npx hardhat clean
-npx hardhat test
-npx hardhat node
-node scripts/sample-script.js
-npx hardhat help
-```
+https://mumbai.polygonscan.com/address/0x9B0C873F3b21308f6a8d90024f9549F7cA3f5963#code
